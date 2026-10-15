@@ -1,0 +1,21 @@
+  services:
+    bankcore-postgres:
+      image: postgres:16
+      container_name: bankcore-postgres
+      restart: unless-stopped
+      environment:
+        POSTGRES_DB: bankcore
+        POSTGRES_USER: bankcore_user
+        POSTGRES_PASSWORD: ${DB_PASSWORD:?DB_PASSWORD must be set}
+      ports:
+        - "5434:5432"
+      volumes:
+        - bankcore_postgres_data:/var/lib/postgresql/data
+      healthcheck:
+        test: [ "CMD-SHELL", "pg_isready -U bankcore_user -d bankcore" ]
+        interval: 5s
+        timeout: 5s
+        retries: 10
+
+  volumes:
+    bankcore_postgres_data:
